@@ -27,3 +27,11 @@ The code was developed using the following configuration:
     Keras (2.0.2)
     numpy (1.13.3)
     pydicom (0.9.9)
+
+keras.json:
+
+    "image_dim_ordering": "th", 
+    "epsilon": 1e-07, 
+    "floatx": "float32", 
+    "image_data_format": "channels_first", 
+    "backend": "theano"
