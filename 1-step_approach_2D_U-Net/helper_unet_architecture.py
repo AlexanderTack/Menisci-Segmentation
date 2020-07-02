@@ -216,50 +216,6 @@ def read_testing_data(path, image_rows, image_cols):
 
     return imgs_test, imgs_names
 
-def write_dicomOld(dcmRef, dcm2D, filename):
-    """
-    INPUTS:
-    dcmRef: reference dicom image
-    dcm2D: 2D numpy ndarray.
-    filename: output path and name for file.
-    """
-
-    file_meta = Dataset()
-    file_meta.MediaStorageSOPClassUID = 'Secondary Capture Image Storage'
-    file_meta.MediaStorageSOPInstanceUID = '1.3.6.1.4.1.9590.100.1.1.111165684411017669021768385720736873780'
-    file_meta.ImplementationClassUID = '1.3.6.1.4.1.9590.100.1.0.100.4.0'
-
-    # create dicom file
-    ds = FileDataset(filename, {},file_meta = file_meta,preamble="\0"*128)
-    # copy meta information from reference image to predicted mask
-    print(dcmRef)
-    
-    for iKey in dcmRef.dir():
-        val = getattr(dcmRef, iKey, '')
-        #print("{0} {1}".format(iKey, val))
-        #if type(val) is dicom.UID.UID or iKey == "PixelData":
-        if iKey == "PixelData":
-            continue
-	  
-	print("{0} {1}".format(iKey, val))
-
-	if iKey == "SmallestImagePixelValue" or iKey =="LargestImagePixelValue" or iKey == "PixelPaddingValue":
-	    setattr(ds, iKey, str(val))
-	    continue
-
-	setattr(ds, iKey, val)
-
-    # set data type of the pixel array to uint16
-    pixel_array = dcm2D[:,:]
-    if pixel_array.dtype != np.uint16:
-        pixel_array = pixel_array.astype(np.uint16)
-
-    ds.PixelData = pixel_array.tostring()
-
-    ds.save_as(filename)
-
-
-    return
 
 def write_dicom(dcmRef, dcm2D, filename):
     """
