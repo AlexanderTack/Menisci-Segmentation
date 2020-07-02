@@ -54,17 +54,20 @@ import helper_unet_architecture as kh
 # Theano image ordering
 K.set_image_dim_ordering('th')
 
+
 def tryint(s):
     try:
         return int(s)
     except:
         return s
 
+    
 def alphanum_key(s):
     """ Turn a string into a list of string and number chunks.
         "z23a" -> ["z", 23, "a"]
     """
     return [ tryint(c) for c in re.split('([0-9]+).;', s) ]
+
 
 def segment_patient(subDir, rel_path, patient_result_dir):
     current_mri_path = os.path.join(oai_path, rel_path)
@@ -96,9 +99,8 @@ def segment_patient(subDir, rel_path, patient_result_dir):
         kh.write_dicom(referenceDicom, model_prediction[lp,0,:,:], os.path.join(patient_result_dir, image_pred_name) )
 
         lp += 1
-    
-    
     return
+
 
 image_rows = 384
 image_cols = 384
@@ -132,6 +134,7 @@ print(result_data_folder_path)
 # image data: where is the OAI data/ the DICOM data
 oai_path = ""
 print(oai_path)
+
 
 if __name__ == '__main__':
 
@@ -171,23 +174,4 @@ if __name__ == '__main__':
         
          segment_patient(patient_ID, subDir.split(" ")[0], patient_result_dir)
          currentPatient += 1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
