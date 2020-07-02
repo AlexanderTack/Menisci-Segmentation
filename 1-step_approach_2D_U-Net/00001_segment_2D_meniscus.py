@@ -26,8 +26,6 @@
 from __future__ import print_function
 import os
 
-#os.environ['THEANORC'] = os.path.join(os.environ['HOME'], ".theanorc_local")
-
 import subprocess
 import cv2
 import numpy as np
@@ -53,10 +51,6 @@ from scipy import ndimage
 import scipy.spatial.distance 
 import helper_unet_architecture as kh
 
-# import Z_mergeBoxes3d_helper as merger
-# import Z_data_helper as datHlp
-# import Z_helper_new as hlpNew
-
 # Theano image ordering
 K.set_image_dim_ordering('th')
 
@@ -73,15 +67,11 @@ def alphanum_key(s):
     return [ tryint(c) for c in re.split('([0-9]+).;', s) ]
 
 def segment_patient(subDir, rel_path, patient_result_dir):
-    # print('------- Patient {0}, ID: {1} -------\n'.format(currentPatient, subDir))
     current_mri_path = os.path.join(oai_path, rel_path)
 
     if not os.path.exists(patient_result_dir):
         os.makedirs(patient_result_dir)
 
-    # script = "python /raid/ZIB/scripts_meniscus/01_Step_I_2D_U-Net.py " + subDir + " " + current_mri_path + " " + model_path + " " + currentResultDir
-    # os.system(script)
-    
     # Load data. Names are needed later for saving the segmentation masks
     imgs_test, img_test_names = kh.read_testing_data(current_mri_path, image_rows, image_cols)
 
@@ -119,11 +109,13 @@ oai_side = sys.argv[1]
 # v00, v12, ... v96
 oai_tp = sys.argv[2]
 
-base_path = "/raid/ZIB/"
+base_path = ""
 
-case_List_File = base_path + oai_tp + "_SAG_3D_DESS_" + oai_side + ".txt"
+# a file stating the OAI path relative to the OAI folder, e.g. /v00/OAI/ for v00
+case_List_File = ""
 
-model_path = base_path + "scripts_meniscus/models/" + "menisci-2D-UNet.384x384.TrainedOnFirst44.hdf5"
+# e.g. "menisci-2D-UNet.384x384.TrainedOnFirst44.hdf5"
+model_path = 
 print('Using model: {0}\n'.format(model_path))
 
 # Create the 2D U-Net architecture
@@ -133,12 +125,12 @@ print('Model compiled.')
 model.load_weights(model_path)
 print('Loaded model weights from {0}.'.format(model_path))
 
-# ssm masks from prev step
-result_data_folder_path = base_path + "OAI_database_segmentations/OAI_Masks_" + oai_tp + "/OAI/"
+# result folder
+result_data_folder_path = ""
 print(result_data_folder_path)
 
-# image data
-oai_path = base_path + "/OAI_database_imagedata/" + oai_tp + "/OAI/"
+# image data: where is the OAI data/ the DICOM data
+oai_path = ""
 print(oai_path)
 
 if __name__ == '__main__':
@@ -176,13 +168,7 @@ if __name__ == '__main__':
          print("{0} of {1}".format(currentPatient, numSubjects) )
 
          patient_result_dir = os.path.join(result_data_folder_path, subDir.split(" ")[0], "Meniskus-2D/")
-         if os.path.exists(patient_result_dir):
-             currentPatient += 1
-             continue
-         #else:
-         #    print("{0} is new".format(patient_result_dir) )
-
-         # segment_patient(patient_ID, currentPatient, subDir.split(" ")[0], oai_path, result_data_folder_path)
+        
          segment_patient(patient_ID, subDir.split(" ")[0], patient_result_dir)
          currentPatient += 1
 
